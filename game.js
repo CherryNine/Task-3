@@ -2,6 +2,7 @@ import { KeyGenerator, HMACGenerator } from './crypto.js';
 import { MoveValidator } from './validation.js';
 import { RuleManager } from './winner.js';
 import { HelpPrinter } from './help.js';
+import { Random } from 'random-js';
 
 export default class Game {
     constructor(args) {
@@ -11,6 +12,7 @@ export default class Game {
         this.hmacGenerator = new HMACGenerator();
         this.helpPrinter = new HelpPrinter(this.moves);
         this.key = this.keyGenerator.generateKey();
+        this.random = new Random();
         this.computerMove = this.getComputerMove();
         this.hmac = this.hmacGenerator.computeHMAC(this.key, this.computerMove);
     }
@@ -53,7 +55,7 @@ export default class Game {
                 console.log(`Computer move: ${this.computerMove}`);
                 console.log(`Result: ${result}`);
                 console.log(`Key: ${this.key.toString('hex')}`);
-                console.log('You can check HMAC here:https://www.devglan.com/online-tools/hmac-sha256-online')
+                console.log('You can check HMAC here: https://www.devglan.com/online-tools/hmac-sha256-online');
                 process.exit();
             } else {
                 console.log('Invalid input. Please select a valid move or enter "help".');
@@ -62,7 +64,7 @@ export default class Game {
     }
 
     getComputerMove() {
-        const randomIndex = Math.floor(Math.random() * this.moves.length);
+        const randomIndex = this.random.integer(0, this.moves.length - 1);
         return this.moves[randomIndex];
     }
 }
